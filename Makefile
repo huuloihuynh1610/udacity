@@ -12,10 +12,7 @@ test:
 	#python -m pytest --nbval notebook.ipynb
 	echo "Run test"
 
-lint:
-	pylint --disable=R,C,W1203,W0702 app.py
-
 web-app:
 	az webapp up --name loihuynh-ml-service --resource-group Azuredevops
 
-all: install lint test
+all: install test
