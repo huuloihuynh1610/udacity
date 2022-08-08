@@ -4,7 +4,6 @@ import logging
 
 import pandas as pd
 from sklearn.externals import joblib
-#import joblib
 from sklearn.preprocessing import StandardScaler
 
 app = Flask(__name__)
@@ -28,6 +27,7 @@ def home():
 @app.route("/predict", methods=['POST'])
 def predict():
     """Performs an sklearn prediction
+
     input looks like:
             {
     "CHAS":{
@@ -48,16 +48,17 @@ def predict():
     "LSTAT":{
        "0":4.98
     }
+
     result looks like:
     { "prediction": [ 20.35373177134412 ] }
+
     """
 
     try:
         clf = joblib.load("boston_housing_prediction.joblib")
-    except Exception as e:
+    except:
         LOG.info("JSON payload: %s json_payload")
-        LOG.info(e)
-        return e
+        return "Model not loaded"
 
     json_payload = request.json
     LOG.info("JSON payload: %s json_payload")
@@ -66,6 +67,7 @@ def predict():
     scaled_payload = scale(inference_payload)
     prediction = list(clf.predict(scaled_payload))
     return jsonify({'prediction': prediction})
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
